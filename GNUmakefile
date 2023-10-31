@@ -1,4 +1,4 @@
-# mattlude                             -*- makefile -*-
+# etude                             -*- makefile -*-
 # GNUmakefile
 # Matt Teichman <https://elucidations.now.sh>
 
@@ -8,7 +8,7 @@ SUBCLEANS =
 DISPLAY = short
 DUNE = dune $1 --display $(DISPLAY)
 
-NAME = mattlude
+NAME = etude
 DESCRIPTION = does something
 # temporary kludge
 PACKAGES = $(shell sed -nf makefiles/getlibs.sed dune)
