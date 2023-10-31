@@ -9,8 +9,8 @@ module OptionMonad = struct
   let bind = bind
 end
 
-include Monad.Make (OptionMonad)
-include OptionMonad
+module M = Monad.Make (OptionMonad)
+include M
 
 let cat_options lst =
   let rec cat_options' acc = function

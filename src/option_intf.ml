@@ -44,6 +44,7 @@ module type ETUDE = sig
   open Endofunctors_intf
 
   type 'a t
+  include Applicative.AUGMENTED with type 'a t := 'a t
   include Monad.AUGMENTED with type 'a t := 'a t
   val cat_options : 'a t list -> 'a list
 end

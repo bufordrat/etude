@@ -95,5 +95,5 @@ module type MAKE =
       ('a, E.t) result ->
       int
 
-    include ETUDE with type 'a t := ('a, E.t) result
+    include AUGMENTED with type 'a t := ('a, E.t) result
   end
