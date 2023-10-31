@@ -4,8 +4,8 @@ synopsis: "Experimental additions to KW's Prelude"
 description: "Experimental additions to KW's Prelude"
 maintainer: ["Matt Teichman <teichman@uchicago.edu>"]
 authors: ["Matt Teichman <teichman@uchicago.edu>"]
-homepage: "https://github.com/bufordrat/mattlude"
-bug-reports: "https://github.com/bufordrat/mattlude"
+homepage: "https://github.com/bufordrat/etude"
+bug-reports: "https://github.com/bufordrat/etude"
 depends: [
   "dune" {>= "2.9"}
   "prelude"
@@ -27,4 +27,4 @@ build: [
   ]
   ["dune" "install" "-p" name "--create-install-files" name]
 ]
-dev-repo: "git+https://github.com/bufordrat/mattlude.git"
+dev-repo: "git+https://github.com/bufordrat/etude.git"
