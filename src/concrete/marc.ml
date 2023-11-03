@@ -38,7 +38,7 @@ module type TABLE = sig
    *   field option *)
 end
 
-module Table : TABLE = struct
+module Table = struct
 
   type t = string
   type field = string
@@ -49,8 +49,8 @@ module Table : TABLE = struct
                     
   module FakeSeek = struct
 
-    module E = struct type t = string end
-    module R = Result.Make (E)
+    (* module E = struct type t = string end *)
+    module R = Result.Make (String)
     include R
        
     let leader table = slice 0 24 table
