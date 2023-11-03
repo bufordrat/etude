@@ -26,19 +26,19 @@ module SaferStdLib = struct
     | lst -> Ok lst
 end
 
-(* module type TABLE = sig
- *   type t
- *   type field
- *   type subfield
- *   type error
- *   val lookup :
- *     error ->
- *     ?subfield:subfield ->
- *     error ->
- *     (error -> error) list option
- * end *)
+module type TABLE = sig
+  type t
+  type field
+  type subfield
+  type error
+  (* val lookup :
+   *   field ->
+   *   ?subfield:subfield ->
+   *   t ->
+   *   field option *)
+end
 
-module Table = struct
+module Table : TABLE = struct
 
   type t = string
   type field = string
