@@ -11,6 +11,7 @@ module ListMonad = struct
   let bind = Prelude.List.bind
 end
 
+include ListMonad
 module M = Monad.Make (ListMonad)
 include M
 

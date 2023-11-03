@@ -162,7 +162,7 @@ module type STDLIB = sig
 end
 
 module type ETUDE = sig
-  type 'a t
+  include Endofunctors_intf.Monad.AUGMENTED
   include Traverse_intf.Traversable.List.AUGMENTED
           with type 'a t := 'a t
 end
