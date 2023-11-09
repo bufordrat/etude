@@ -12,10 +12,12 @@ end
 module M = Monad.Make (OptionMonad)
 include M
 
+type 'a t = 'a option = None | Some of 'a
+
 let cat_options lst =
   let rec cat_options' acc = function
     | [] -> acc
     | Some x :: xs -> cat_options' (x :: acc) xs
     | None :: xs -> cat_options' acc xs
   in
-  Stdlib.List.rev @@ cat_options' [] lst
+  List.rev @@ cat_options' [] lst
