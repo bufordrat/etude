@@ -27,13 +27,15 @@ module SaferStdLib = struct
 end
 
 module type TABLE = sig
+  val leader : string ->
+               string
   val lookup : string ->
                ?subfield:char ->
                string ->
                string list option
 end
 
-module Table = struct
+module Table : TABLE = struct
 
   include SaferStdLib
                     
@@ -68,7 +70,8 @@ module Table = struct
       let+ raw = raw_directory table
       in directory' raw
 
-    let trim = String.trim " \n\t\r\031\030"
+    let cleanup =
+      Prelude.String.trim " \n\t\r\031\030"
 
     let subfields_to_alist str =
       let open Prelude.String in
@@ -94,13 +97,14 @@ module Table = struct
         | Some s -> List.map subfields_to_alist lookups
                     |> T.traverse (assoc_res s)
       in
-      output
+      R.map (List.map cleanup) output
 
     let lookup field ?subfield marc =
       lookup_res field ?subfield marc
       |> R.to_option
   end
 
+  let leader = FakeSeek.leader
   let lookup = FakeSeek.lookup
 end
 
