@@ -42,8 +42,6 @@ module Table : TABLE = struct
   module FakeSeek = struct
 
     module R = Result.Make (String)
-    include R
-
     module T = Traverse.List.Make (R)
        
     let leader table = slice 0 24 table
@@ -52,11 +50,13 @@ module Table : TABLE = struct
                          |> string_to_int
     
     let raw_directory table =
+      let open R in
       let starting = 24 in
       let* ending = base_pos table in
       pure (slice starting ending table)
     
     let directory table =
+      let open R in
       let rec directory' dir =
         let len = String.length dir in
         if len >= 12
@@ -81,7 +81,7 @@ module Table : TABLE = struct
       List.map mk_pair lst
 
     let lookup_res field ?subfield marc =
-      let open Endofunctors_old in
+      let open R in
       let* bpos = base_pos marc in
       let body = Prelude.String.drop bpos marc in
       let* dir = directory marc in
@@ -97,7 +97,7 @@ module Table : TABLE = struct
         | Some s -> List.map subfields_to_alist lookups
                     |> T.traverse (assoc_res s)
       in
-      R.map (List.map cleanup) output
+      map (List.map cleanup) output
 
     let lookup field ?subfield marc =
       lookup_res field ?subfield marc
