@@ -26,16 +26,7 @@ module SaferStdLib = struct
     | lst -> Ok lst
 end
 
-module type TABLE = sig
-  val leader : string ->
-               string
-  val lookup : string ->
-               ?subfield:char ->
-               string ->
-               string list option
-end
-
-module Table : TABLE = struct
+module Table = struct
 
   include SaferStdLib
                     
@@ -103,10 +94,10 @@ module Table : TABLE = struct
       lookup_res field ?subfield marc
       |> R.to_option
   end
-
-  let leader = FakeSeek.leader
-  let lookup = FakeSeek.lookup
 end
+
+let leader = Table.FakeSeek.leader
+let lookup = Table.FakeSeek.lookup
 
 module Examples = struct
   let a = "02519nam a2200469 i 450000100070000000500170000700800410002400300040006501000160006902000100008503500200009503500190011504000180013404100080015205000330016008200250019310001120021824500950033026001380042530000530056333600730061633700710068933800690076044000330082950001790086250400290104165000740107065000620114465000580120665000590126465500650132365500640138870001310145270001030158370000580168690100130174490300090175792900080176699900790177492800840185392701120193726931220071211144300.0790409s1976    dcua     b   f00010 eng uICU  a   76600071  c$3.25  a(ICU)BID3921390  a(OCoLC)2935667  aDLCcDLCdICU0 aeng0 aQC100b.U57 no. 440aQC494.3  a602/.1 sa535.6/01/41 aKelly, Kenneth L.,d1910-19910http://id.loc.gov/authorities/names/n500481531http://viaf.org/viaf/9194448210aColor :buniversal language and dictionary of names /cKenneth L. Kelly and Deane B. Judd.0 a[Washington] :bU.S. Dept. of Commerce, National Bureau of Standards : for sale by the Supt. of Docs., U.S. Govt. Print. Off.,c1976.  avii, 19, v, 158 p. :bill. (some col.) ;c26 cm.  atextbtxt2rdacontent0http://id.loc.gov/vocabulary/contentTypes/txt  aunmediatedbn2rdamedia0http://id.loc.gov/vocabulary/mediaTypes/n  avolumebnc2rdacarrier0http://id.loc.gov/vocabulary/carriers/nc 0aNBS special publicationv440  aSupersedes and combines The ISCC-NBS method of designating colors and a dictionary of color names by K. L. Kelly and D. B. Judd and A universal color language by K. L. Kelly.  aIncludes bibliographies. 0aColorxTerminology0http://id.loc.gov/authorities/subjects/sh85028581 0aColors0http://id.loc.gov/authorities/subjects/sh85028700 7aColor.2fast0http://id.worldcat.org/fast/fst00868499 7aColors.2fast0http://id.worldcat.org/fast/fst00868751 7aDictionaries.2fast0http://id.worldcat.org/fast/fst01423826 7aTerminology.2fast0http://id.worldcat.org/fast/fst0142388010aJudd, Deane Brewster,d1900-1972.ejoint author.0http://id.loc.gov/authorities/names/n500388371http://viaf.org/viaf/5293114811aKelly, Kenneth Low,d1910-tISCC-NBS method of designating colors and a dictionary of color names.11aKelly, Kenneth Low,d1910-tUniversal color language.  aAnalytic  aHeVa  acatffiba379fcc-28a9-5e0b-bf69-aa4b73df837bs475ef984-4515-5f26-b238-1d98c61d2b70  tLibrary of Congress classificationaQC100.U524 no.440lASRcASR-SciASRi1712591  tLibrary of Congress classificationaQC100.U524 no.440lASRcASR-SciASRgAnalyticeCRERARbA13099231i871191"
