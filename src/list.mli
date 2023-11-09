@@ -1,1 +1,1 @@
-include List_intf.AUGMENTED with type 'a t = 'a list
+include List_intf.AUGMENTED

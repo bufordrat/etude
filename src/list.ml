@@ -11,9 +11,10 @@ module ListMonad = struct
   let bind = Prelude.List.bind
 end
 
-include ListMonad
 module M = Monad.Make (ListMonad)
 include M
+
+type 'a t = 'a list = [] | (::) of 'a * 'a list
 
 module Traverse = struct
   module T = Traverse.List.Make (M)
