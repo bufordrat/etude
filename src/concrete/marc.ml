@@ -27,31 +27,22 @@ module SaferStdLib = struct
 end
 
 module type TABLE = sig
-  type t
-  type field
-  type subfield
-  type error
-  (* val lookup :
-   *   field ->
-   *   ?subfield:subfield ->
-   *   t ->
-   *   field option *)
+  val lookup : string ->
+               ?subfield:char ->
+               string ->
+               string list option
 end
 
 module Table = struct
-
-  type t = string
-  type field = string
-  type subfield = char
-  type error = string
 
   include SaferStdLib
                     
   module FakeSeek = struct
 
-    (* module E = struct type t = string end *)
     module R = Result.Make (String)
     include R
+
+    module T = Traverse.List.Make (R)
        
     let leader table = slice 0 24 table
 
@@ -88,7 +79,6 @@ module Table = struct
 
     let lookup_res field ?subfield marc =
       let open Endofunctors_old in
-      let open Traverse.List.Make (R) in
       let* bpos = base_pos marc in
       let body = Prelude.String.drop bpos marc in
       let* dir = directory marc in
@@ -98,13 +88,13 @@ module Table = struct
         and+ p = string_to_int pos_str in
         slice p (p + l) body
       in
-      let* lookups = traverse each_field fields in
-      let+ output = match subfield with
+      let* lookups = T.traverse each_field fields in
+      let output = match subfield with
         | None -> pure lookups
         | Some s -> List.map subfields_to_alist lookups
-                    |> traverse (assoc_res s)
+                    |> T.traverse (assoc_res s)
       in
-      List.map Prelude.String.trim output
+      output
 
     let lookup field ?subfield marc =
       lookup_res field ?subfield marc
