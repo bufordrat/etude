@@ -23,7 +23,7 @@ module Functor = struct
     let map f composed = F1.map (F2.map f) composed
   end
 end
-module type FUNCTOR = Functor.BASIC
+
 
 module Applicative = struct
   module type BASIC =
@@ -44,9 +44,8 @@ module Applicative = struct
                         (A.product af ax)
     let ( <*> ) = apply
   end
-
 end
-module type APPLICATIVE = Applicative.BASIC
+
 
 module Monad = struct
   module type BASIC =
@@ -78,4 +77,4 @@ module Monad = struct
     include Applicative.Make (I)
   end
 end
-module type MONAD = Monad.BASIC
+
