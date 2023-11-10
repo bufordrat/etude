@@ -23,6 +23,9 @@ module Monoid = struct
     type 'a t
     include Semigroup.AUGMENTED with type 'a t := 'a t
     include BASIC with type 'a t := 'a t
+
+    (* TODO: abstract the list part over foldable container types *)
+          
     val sum : 'a t list -> 'a t
   end
 end
@@ -72,5 +75,10 @@ module Traversable = struct
       val traverse : ('a -> 'b t) -> 'a list -> 'b list t
       val forM : 'a list -> ('a -> 'b t) -> 'b list t
     end
+
+    module type MAKE =
+      functor (I : IDIOM) -> sig
+        include AUGMENTED with type 'a t := 'a I.t 
+      end
   end
 end
