@@ -11,7 +11,6 @@ module Make (S : PURESTATE) : sig
   include MONAD with type 'a t := (S.t, 'a) t
   include BASIC with type ('s, 'a) t := ('s, 'a) t
 end = struct
-
   type ('s, 'a) t = 's -> 'a * 's
   module StateMonad = struct
     type 'a t = S.t -> 'a * S.t

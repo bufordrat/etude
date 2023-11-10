@@ -33,7 +33,8 @@ module Applicative = struct
     Endofunctors_intf.Applicative.AUGMENTED
 
   module Make (A : BASIC)
-         : AUGMENTED with type 'a t = 'a A.t = struct
+         : AUGMENTED with type 'a t = 'a A.t
+    = struct
     include Functor.Make (A)
     type 'a t = 'a A.t
     let ( and+ ) = A.product
