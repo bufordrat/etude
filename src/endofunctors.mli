@@ -5,8 +5,7 @@ module Functor : sig
   module type AUGMENTED =
     Endofunctors_intf.Functor.AUGMENTED
 
-  module Make : functor (F : BASIC) ->
-                AUGMENTED with type 'a t = 'a F.t
+  module Make : Endofunctors_intf.Functor.MAKE
 end
 
 module Applicative : sig
@@ -16,8 +15,7 @@ module Applicative : sig
   module type AUGMENTED =
     Endofunctors_intf.Applicative.AUGMENTED
 
-  module Make : functor (A : BASIC) ->
-                AUGMENTED with type 'a t = 'a A.t 
+  module Make : Endofunctors_intf.Applicative.MAKE
 end
 
 module Monad : sig
@@ -27,6 +25,5 @@ module Monad : sig
   module type AUGMENTED =
     Endofunctors_intf.Monad.AUGMENTED
 
-  module Make : functor (M : BASIC) ->
-                AUGMENTED with type 'a t = 'a M.t
+  module Make : Endofunctors_intf.Monad.MAKE
 end

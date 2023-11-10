@@ -13,6 +13,9 @@ module Functor = struct
     val ( >|= ) : 'a t -> ('a -> 'b) -> 'b t
     val ( <$> ) : ('a -> 'b) -> 'a t -> 'b t
   end
+
+  module type MAKE = functor (F : BASIC) ->
+                     AUGMENTED with type 'a t = 'a F.t
 end
 module type FUNCTOR = Functor.AUGMENTED
                
@@ -32,6 +35,9 @@ module Applicative = struct
     val apply : ('a -> 'b) t -> 'a t -> 'b t
     val ( <*> ) : ('a -> 'b) t -> 'a t -> 'b t
   end
+
+  module type MAKE = functor (A : BASIC) ->
+                     AUGMENTED with type 'a t = 'a A.t 
 end
 module type APPLICATIVE = Applicative.AUGMENTED
 
@@ -53,5 +59,8 @@ module Monad = struct
     val ( >> ) : 'a t -> 'b t -> 'b t
     val join : 'a t t -> 'a t
   end
+
+  module type MAKE = functor (M : BASIC) ->
+                     AUGMENTED with type 'a t = 'a M.t
 end
 module type MONAD = Monad.AUGMENTED
