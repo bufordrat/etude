@@ -11,7 +11,7 @@ end
 
 module type MAKE = functor (S : PURESTATE) ->
   sig
-    type ('s, 'a) t
+    include BASIC 
     val pure : 'a -> (S.t, 'a) t
     val bind : (S.t, 'a) t -> ('a -> (S.t, 'b) t) -> (S.t, 'b) t
     val map : ('a -> 'b) -> (S.t, 'a) t -> (S.t, 'b) t
@@ -31,9 +31,4 @@ module type MAKE = functor (S : PURESTATE) ->
       ('a -> (S.t, 'b) t) -> ('c -> (S.t, 'a) t) -> 'c -> (S.t, 'b) t
     val ( >> ) : (S.t, 'a) t -> (S.t, 'b) t -> (S.t, 'b) t
     val join : (S.t, (S.t, 'a) t) t -> (S.t, 'a) t
-    val put : 'state -> ('state, unit) t
-    val get : ('state, 'state) t
-    val eval : ('state, 'a) t -> 'state -> 'a
-    val exec : ('state, 'a) t -> 'state -> 'state
-    val run : ('state, 'a) t -> 'state -> 'a * 'state
 end
