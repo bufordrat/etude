@@ -11,24 +11,6 @@ end
 
 module type MAKE = functor (S : PURESTATE) ->
   sig
-    include BASIC 
-    val pure : 'a -> (S.t, 'a) t
-    val bind : (S.t, 'a) t -> ('a -> (S.t, 'b) t) -> (S.t, 'b) t
-    val map : ('a -> 'b) -> (S.t, 'a) t -> (S.t, 'b) t
-    val ( let+ ) : (S.t, 'a) t -> ('a -> 'b) -> (S.t, 'b) t
-    val ( >>| ) : (S.t, 'a) t -> ('a -> 'b) -> (S.t, 'b) t
-    val ( <&> ) : (S.t, 'a) t -> ('a -> 'b) -> (S.t, 'b) t
-    val ( >|= ) : (S.t, 'a) t -> ('a -> 'b) -> (S.t, 'b) t
-    val ( <$> ) : ('a -> 'b) -> (S.t, 'a) t -> (S.t, 'b) t
-    val ( and+ ) : (S.t, 'a) t -> (S.t, 'b) t -> (S.t, 'a * 'b) t
-    val apply : (S.t, 'a -> 'b) t -> (S.t, 'a) t -> (S.t, 'b) t
-    val ( <*> ) : (S.t, 'a -> 'b) t -> (S.t, 'a) t -> (S.t, 'b) t
-    val ( >>= ) : (S.t, 'a) t -> ('a -> (S.t, 'b) t) -> (S.t, 'b) t
-    val ( let* ) : (S.t, 'a) t -> ('a -> (S.t, 'b) t) -> (S.t, 'b) t
-    val ( >=> ) :
-      ('a -> (S.t, 'b) t) -> ('b -> (S.t, 'c) t) -> 'a -> (S.t, 'c) t
-    val ( <=< ) :
-      ('a -> (S.t, 'b) t) -> ('c -> (S.t, 'a) t) -> 'c -> (S.t, 'b) t
-    val ( >> ) : (S.t, 'a) t -> (S.t, 'b) t -> (S.t, 'b) t
-    val join : (S.t, (S.t, 'a) t) t -> (S.t, 'a) t
+    include BASIC
+    include Endofunctors_intf.Monad.AUGMENTED with type 'a t := (S.t, 'a) t
 end
