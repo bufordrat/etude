@@ -24,16 +24,4 @@ module Env = struct
         | DefaultTo d -> d
       end
 
-  (* let lookup  *)
-
-  (* module type MONAD = Endofunctors_intf.MONAD *)
-  (* module R = Endofunctors_old.Result.Make (String) *)
-
-
-(* let getenv = Prelude.Result.trapc
- *                "not in environment"
- *                Sys.getenv
- * let lookup env_vars =
- *   kleisli (List.map getenv env_vars) *)
-  (* end *)
 end
