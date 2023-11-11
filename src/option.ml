@@ -9,10 +9,29 @@ module OptionMonad = struct
   let bind = bind
 end
 
+module OptionMonoid = struct
+  type 'a t = 'a Stdlib.Option.t
+  let append ox oy =
+    match ox, oy with
+    | Some s1, _ -> Some s1
+    | _, Some s2 -> Some s2
+    | None, None -> None
+  let empty = None
+end
+
 module M = Monad.Make (OptionMonad)
 include M
 
 type 'a t = 'a option = None | Some of 'a
+
+module Monoid = struct
+  module Mo = Monoid.Make (OptionMonoid)
+  let empty = Mo.empty
+  let (<|>) = Mo.(<|>)
+  let append = Mo.append
+  let asum = Mo.asum
+end
+include Monoid
 
 let cat_options lst =
   let rec cat_options' acc = function

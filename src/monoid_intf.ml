@@ -26,7 +26,7 @@ module Monoid = struct
 
     (* TODO: abstract the list part over foldable container types *)
           
-    val sum : 'a t list -> 'a t
+    val asum : 'a t list -> 'a t
   end
 end
 module type MONOID = Monoid.AUGMENTED

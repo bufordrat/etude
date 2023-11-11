@@ -18,7 +18,6 @@ module type STDLIB = sig
   val nth_opt : 'a t -> int -> 'a option
   val rev : 'a t -> 'a t
   val init : int -> (int -> 'a) -> 'a t
-  val append : 'a t -> 'a t -> 'a t
   val rev_append : 'a t -> 'a t -> 'a t
   val concat : 'a t t -> 'a t
   val flatten : 'a t t -> 'a t
@@ -100,7 +99,6 @@ module type PRELUDE = sig
   val ( -- ) : int -> int -> int t
   val random : ?size:(unit -> int) -> (unit -> 'a) -> unit -> 'a t
   val null : 'a t -> bool
-  val empty : 'a t -> bool
   val nonempty : 'a t -> bool
   val singleton : 'a t -> bool
   val many : 'a t -> bool
@@ -123,7 +121,6 @@ module type PRELUDE = sig
   val disjunction : ('a -> bool) t -> 'a -> bool
   val all : ('a -> bool) -> 'a t -> bool
   val any : ('a -> bool) -> 'a t -> bool
-  val sum : int t -> int
   val maximumBy : ?compare:('a -> 'a -> int) -> 'a t -> 'a
   val maximum : 'a t -> 'a
   val minimum : ?compare:('a -> 'a -> int) -> 'a t -> 'a
@@ -174,10 +171,12 @@ module type ETUDE = sig
   include Endofunctors_intf.Monad.AUGMENTED
   include Traverse_intf.Traversable.List.AUGMENTED
           with type 'a t := 'a t
+  include Monoid_intf.MONOID
+          with type 'a t := 'a t
 end
 
 module type AUGMENTED = sig
-  type 'a t = 'a Stdlib.List.t
+  type 'a t = 'a list
   include STDLIB with type 'a t := 'a t
   include PRELUDE with type 'a t := 'a t
   include ETUDE with type 'a t := 'a t
