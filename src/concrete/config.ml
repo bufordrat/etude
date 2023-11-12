@@ -1,8 +1,14 @@
 module File = struct
   module Simple = struct
-    let alternatives f lst =
+    let alternatives ?(parse=Option.pure) f lst =
       let open Option in
-      asum (List.map (catch f) lst)
+      asum (List.map (catch f >=> parse) lst)
+
+    let alternatives_parse
+        : parse:('c -> 'a option) -> ('b -> 'c) -> 'b list -> 'a option
+      = fun ~parse f lst ->
+      let open Option in
+      asum (List.map (catch f) lst) >>= parse
 
     let read_paths paths = alternatives Prelude.readfile paths
 
@@ -12,11 +18,6 @@ module File = struct
       let open Option in
       read_vars path_vars <|> read_paths paths <|> pure fallback
       |> get
-
-    (* let get_config ~path_vars ~paths ~fallback =
-     *   let open Option in
-     *   read_vars path_vars <|> read_paths paths <|> pure fallback
-     *   |> get *)
   end
 
   let alternatives = Simple.alternatives
