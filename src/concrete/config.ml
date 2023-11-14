@@ -72,14 +72,39 @@ end
 
 module Parse = struct
 
-  module Simple = struct
-    let alternatives lookup parse lst =
-      let open Option in
-      asum (List.map (lookup >=> parse) lst)
-  end
-
   module FCM = struct
+    module type CONFPATHS = sig
+      type t
+      type error
+      include Path.FCM.CONFPATHS
+      val parse : string -> (t, error) result
+      val error_msg : string -> (t, error) result
+    end
 
+    let get_config (module C : CONFPATHS) =
+      let open Option in
+      let* filepath =
+        Path.Simple.get_config
+          ~cmdline_opt:C.cmdline_opt
+          ~path_vars:C.path_vars
+          ~paths:C.paths
+      in
+      let* contents =
+        catch Prelude.readfile filepath
+      in
+      assert false
+      
+      (* let parsed = 
+       *   match contents_opt with
+       *   | Some contents ->
+       *      C.parse contents
+       *   | None ->
+       *      C.error_msg "bad filepath"
+       * in
+       * 
+       * assert false *)
+
+      
   end
 
 end
