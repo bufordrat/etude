@@ -6,6 +6,8 @@ module Functor = struct
 
   module type AUGMENTED = sig
     type 'a t
+
+    (** @inline *)
     include BASIC with type 'a t := 'a t
     val ( let+ ) : 'a t -> ('a -> 'b) -> 'b t
     val ( >>| ) : 'a t -> ('a -> 'b) -> 'b t
@@ -29,7 +31,11 @@ module Applicative = struct
 
   module type AUGMENTED = sig
     type 'a t
+
+    (** @inline *)
     include BASIC with type 'a t := 'a t
+
+    (** @inline *)
     include Functor.AUGMENTED with type 'a t := 'a t
     val ( and+ ) : 'a t -> 'b t -> ('a * 'b) t
     val apply : ('a -> 'b) t -> 'a t -> 'b t
@@ -50,7 +56,11 @@ module Monad = struct
 
   module type AUGMENTED = sig
     type 'a t
+
+    (** @inline *)
     include BASIC with type 'a t := 'a t
+
+    (** @inline *)
     include Applicative.AUGMENTED with type 'a t := 'a t
     val ( >>= ) : 'a t -> ('a -> 'b t) -> 'b t
     val ( let* ) : 'a t -> ('a -> 'b t) -> 'b t

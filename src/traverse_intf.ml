@@ -38,6 +38,8 @@ module Traversable = struct
 
     module type AUGMENTED = sig
       type 'a t
+         
+      (** @inline *)
       include BASIC with type 'a t := 'a t
       val traverse : ('a -> 'b t) -> 'a list -> 'b list t
       val forM : 'a list -> ('a -> 'b t) -> 'b list t

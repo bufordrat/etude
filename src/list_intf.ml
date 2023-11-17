@@ -173,9 +173,15 @@ end
 
 
 module type ETUDE = sig
+
+  (** @inline *)
   include Endofunctors_intf.Monad.AUGMENTED
+
+  (** @inline *)
   include Traverse_intf.Traversable.List.AUGMENTED
           with type 'a t := 'a t
+
+  (** @inline *)
   include Monoid_intf.MONOID
           with type 'a t := 'a t
 end
@@ -184,7 +190,14 @@ end
 module type AUGMENTED = sig
   type 'a t = 'a list
 
+  (**/**)
   include STDLIB with type 'a t := 'a t
+  (**/**)
+
+  (**/**)
   include PRELUDE with type 'a t := 'a t
+  (**/**)
+
+  (** @inline *)
   include ETUDE with type 'a t := 'a t
 end
