@@ -8,6 +8,7 @@
 
 module type STDLIB = sig
   type 'a t
+
   val length : 'a t -> int
   val compare_lengths : 'a t -> 'b t -> int
   val compare_length_with : 'a t -> int -> int
@@ -71,6 +72,8 @@ module type STDLIB = sig
   val to_seq : 'a t -> 'a Seq.t
   val of_seq : 'a Seq.t -> 'a t
 end
+
+
 
 module type PRELUDE = sig
   type 'a t
@@ -167,6 +170,8 @@ module type PRELUDE = sig
   val combinations : int -> 'a t -> 'a t t
 end
 
+
+
 module type ETUDE = sig
   include Endofunctors_intf.Monad.AUGMENTED
   include Traverse_intf.Traversable.List.AUGMENTED
@@ -175,8 +180,10 @@ module type ETUDE = sig
           with type 'a t := 'a t
 end
 
+
 module type AUGMENTED = sig
   type 'a t = 'a list
+
   include STDLIB with type 'a t := 'a t
   include PRELUDE with type 'a t := 'a t
   include ETUDE with type 'a t := 'a t

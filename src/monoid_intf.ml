@@ -30,3 +30,4 @@ module Monoid = struct
   end
 end
 module type MONOID = Monoid.AUGMENTED
+

@@ -70,7 +70,7 @@ reinstall-libs::
 .PHONY: reinstall-libs
 
 doc::				## build documentation
-	$(call DUNE, build @doc-private)
+	$(call DUNE, build @doc)
 .PHONY: doc
 
 # this path is bogus but _build/default/_doc/_html/index.html is always empty
@@ -81,5 +81,10 @@ clean: $(SUBCLEANS)		## clean up build artifacts
 	$(call DUNE, clean)
 	$(RM) META $(NAME).opam
 .PHONY: clean
+
+ODOC_WEB = staff:/data/web/dldc/open/etude/
+.PHONY: install-doc
+install-doc: doc
+	rsync -av ~/Code/GitHub/etude/_build/default/_doc/_html/ $(ODOC_WEB)
 
 -include $(LIB)/Makefile.help
