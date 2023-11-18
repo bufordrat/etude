@@ -73,8 +73,6 @@ module type STDLIB = sig
   val of_seq : 'a Seq.t -> 'a t
 end
 
-
-
 module type PRELUDE = sig
   type 'a t
   val len : 'a t -> int
@@ -170,8 +168,6 @@ module type PRELUDE = sig
   val combinations : int -> 'a t -> 'a t t
 end
 
-
-
 module type ETUDE = sig
 
   (** @inline *)
@@ -188,6 +184,7 @@ end
 
 
 module type AUGMENTED = sig
+  (** {!Etude.List.t} is [Stdlib.List.t] *)
   type 'a t = 'a list
 
   (**/**)
