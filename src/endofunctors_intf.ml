@@ -87,7 +87,7 @@ module Applicative = struct
        [fun x -> [x]], and in the result applicative it is
        [fun x -> Ok x].
 
-       Note that [pure] is always synonymous with monadic [return]. *)
+       Note that [pure] is synonymous with monadic [return]. *)
 
     val product : 'a t -> 'b t -> ('a * 'b) t
 
