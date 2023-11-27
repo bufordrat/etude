@@ -75,6 +75,7 @@ module Monad = struct
                           let* y = ay in
                           pure (x,y)
     end
+    let return = I.pure
     include Applicative.Make (I)
   end
 end

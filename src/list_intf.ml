@@ -184,7 +184,7 @@ end
 
 
 module type AUGMENTED = sig
-  (** {!Etude.List.t} is [Stdlib.List.t] *)
+  (** Functional linked lists.  {!Etude.List.t} is [Stdlib.List.t] *)
   type 'a t = 'a list
 
   (**/**)
