@@ -32,8 +32,43 @@ module Traversable = struct
 
   module List = struct
     module type BASIC = sig
-      type 'a t 
+      type 'a t
+
       val sequence : 'a t list -> 'a list t
+      (** [sequence] converts a list of applicative values into an
+         applicative list by re-consing the list back together under the
+         applicative.  For more information on applicative functors in
+         OCaml, please see {{:
+         https://www.cl.cam.ac.uk/teaching/1617/L28/monads.pdf}these
+         course notes}, section 10.4.
+
+         Example usage for options, lists, and results:
+{v
+# let open Etude.Option in
+sequence [Some 1; Some 2; Some 3];;
+- : int list option = Etude.Option.Some [1; 2; 3]
+# let open Etude.Option in
+sequence [Some 1; None; Some 3];;
+- : int list option = Etude.Option.None
+# let open Etude.Option in
+sequence [None; None; None];;
+- : 'a list option = Etude.Option.None
+v}
+
+{v
+# let open Etude.List in
+sequence [[1; 2]; [3; 4]];;
+- : int list list = [[1; 3]; [1; 4]; [2; 3]; [2; 4]]
+# let open Etude.List in
+sequence [[1]; [2; 3; 4]; [5]];;
+- : int list list = [[1; 2; 5]; [1; 3; 5]; [1; 4; 5]]
+# let open Etude.List in
+sequence [[1]; [2; 3; 4]; []];;
+- : int list list = []
+v}
+       *)
+
+
     end
 
     module type AUGMENTED = sig

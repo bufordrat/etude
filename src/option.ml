@@ -24,6 +24,14 @@ include M
 
 type 'a t = 'a option = None | Some of 'a
 
+module Traverse = struct
+  module T = Traverse.List.Make (M)
+  let sequence = T.sequence
+  let forM = T.forM
+  let traverse = T.traverse
+end
+include Traverse
+
 module Monoid = struct
   module Mo = Monoid.Make (OptionMonoid)
   let empty = Mo.empty

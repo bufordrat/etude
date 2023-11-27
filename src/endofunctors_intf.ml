@@ -245,7 +245,6 @@ pure (+) <*> Ok 1 <*> Error "whoops" ;;
 - : (int, string) result = Error "whoops"
 v}
      *)
-
   end
 
   module type MAKE = functor (A : BASIC) ->
@@ -268,44 +267,7 @@ module Monad = struct
      https://cs3110.github.io/textbook/chapters/ds/monads.html}these
      course notes}.
 
-     Example usage for options, lists, and results:
-{v
-# let open Etude.Option in
-let k x = if x > 2 then Some x else None in
-let mx = Some 12 in
-bind mx k;;
-- : int option = Etude.Option.Some 12
-# let open Etude.Option in
-let k x = if x > 2 then Some x else None in
-let mx = Some 1 in
-bind mx k;;
-- : int option = Etude.Option.None
-v}
-
-{v
-# let open Etude.List in
-let pair_up x = [x ; x * 10] in
-bind [1;2;3] pair_up;;
-- : int list = [1; 10; 2; 20; 3; 30]
-# let open Etude.List in
-let is_it_even n = if n mod 2 = 0 then [n] else [] in
-bind [1;2;3;4;5] is_it_even;;
-- : int list = [2; 4]
-v}
-
-{v
-# let open Etude.Result.Make (String) in
-let k x = if x > 2 then Ok x else Error "too small" in
-let mx = Ok 12 in
-bind mx k;;
-- : (int, string) result = Ok 12
-# let open Etude.Result.Make (String) in
-let k x = if x > 2 then Ok x else Error "too small" in
-let mx = Ok 0 in
-bind mx k;;
-- : (int, string) result = Error "too small"
-v}
-
+     See {!Endofunctors.Monad.Make.(>>=)} for example usage.
 *)
   end
 
@@ -318,17 +280,240 @@ v}
     (** @inline *)
     include Applicative.AUGMENTED with type 'a t := 'a t
 
-    (** stuff *)
-
     val return : 'a -> 'a t
     (** [return] is {!pure}.  *)
 
     val ( >>= ) : 'a t -> ('a -> 'b t) -> 'b t
+    (** [(>>=)] is an infix version of {!bind}.
+
+    Example usage for options, lists, and results:
+{v
+# let open Etude.Option in
+let k x = if x > 2 then Some x else None in
+Some 12 >>= k;;
+- : int option = Etude.Option.Some 12
+# let open Etude.Option in
+let k x = if x > 2 then Some x else None in
+Some 1 >>= k;;
+- : int option = Etude.Option.None
+v}
+
+{v
+# let open Etude.List in
+let pair_up x = [x ; x * 10] in
+[1; 2; 3] >>= pair_up;;
+- : int list = [1; 10; 2; 20; 3; 30]
+# let open Etude.List in
+let is_it_even n = if n mod 2 = 0 then [n] else [] in
+[1; 2; 3; 4; 5] >>= is_it_even;;
+- : int list = [2; 4]
+v}
+
+{v
+# let open Etude.Result.Make (String) in
+let k x = if x > 2 then Ok x else Error "too small" in
+Ok 12 >>= k;;
+- : (int, string) result = Ok 12
+# let open Etude.Result.Make (String) in
+let k x = if x > 2 then Ok x else Error "too small" in
+Ok 0 >>= k;;
+- : (int, string) result = Error "too small"
+v}
+
+*)
+
     val ( let* ) : 'a t -> ('a -> 'b t) -> 'b t
+    (** [( let* )] is {!bind} for use in {{:
+       http://jobjo.github.io//2019/04/24/ocaml-has-some-new-shiny-syntax.html}letops
+       syntax}. 
+
+       Example usage for options, lists, and results:
+{v
+# let open Etude.Option in 
+let k x = if x > 2 then Some x else None in
+let* x = Some 13 in
+k x;;
+- : int option = Etude.Option.Some 13
+# let open Etude.Option in 
+let k x = if x > 2 then Some x else None in
+let* x = Some (-2) in
+k x;;
+- : int option = Etude.Option.None
+v}
+
+{v
+# let open Etude.List in
+let pair_up x = [x ; x * 10] in
+let* each_item = [1; 2; 3] in
+pair_up each_item;;
+- : int list = [1; 10; 2; 20; 3; 30]
+# let open Etude.List in 
+let is_it_even n = if n mod 2 = 0 then [n] else [] in
+let* each_item = [1; 2; 3; 4; 5] in
+is_it_even each_item;;
+- : int list = [2; 4]
+v}
+
+{v
+# let open Etude.Result.Make (String) in
+let k x = if x > 2 then Ok x else Error "too small" in
+let* x = Ok 13 in
+k x;;
+- : (int, string) result = Ok 13
+# let open Etude.Result.Make (String) in
+let k x = if x > 2 then Ok x else Error "too small" in
+let* x = Ok 1 in
+k x;;
+- : (int, string) result = Error "too small"
+v}
+     *)
+
     val ( >=> ) : ('a -> 'b t) -> ('b -> 'c t) -> 'a -> 'c t
+    (** [(>=>)] is Kleisli pre-composition.  It provides an embellished
+       version of function pre-composition under a monad, similarly to
+       how {!bind} provides an embellished version of piping under a
+       monad.  
+       
+       Example usage for options, results, and lists: 
+{v
+# let open Etude.Option in
+let k1 n = if n mod 2 = 0 then Some n else None in
+let k2 n = if n < 5 then Some n else None in
+let* x = Some 2 in
+(k1 >=> k2) x;;
+- : int option = Etude.Option.Some 2
+# let open Etude.Option in
+let k1 n = if n mod 2 = 0 then Some n else None in
+let k2 n = if n < 5 then Some n else None in
+let* x = Some 3 in
+(k1 >=> k2) x;;
+v}
+
+{v
+# let open Etude.List in 
+let is_it_even n = if n mod 2 = 0 then [n] else [] in
+let pair_up n = [n ; n * 10] in
+let* x = [1; 2; 3] in
+(is_it_even >=> pair_up) x;;
+- : int list = [2; 20]
+# let open Etude.List in 
+let is_it_even n = if n mod 2 = 0 then [n] else [] in
+let pair_up n = [n ; n * 10] in
+let* x = [1; 2; 3] in
+(pair_up >=> is_it_even) x;;
+- : int list = [10; 2; 20; 30]
+v}
+
+{v
+# let open Etude.Result.Make (String) in
+let k1 n = if n mod 2 = 0 then Ok n else Error "should be even" in
+let k2 n = if n < 5 then Ok n else Error "too small" in
+let* x = Ok 11 in
+(k1 >=> k2) x;;
+- : (int, string) result = Error "should be even"
+# let open Etude.Result.Make (String) in
+let k1 n = if n mod 2 = 0 then Ok n else Error "should be even" in
+let k2 n = if n < 5 then Ok n else Error "too small" in
+let* x = Ok 11 in
+(k2 >=> k1) x;;
+- : (int, string) result = Error "too small"
+v}
+     *)
+      
     val ( <=< ) : ('a -> 'b t) -> ('c -> 'a t) -> 'c -> 'b t
+    (** [(<=<)] is Kleisli composition, i.e. the flipped version of
+       {!(>=>)}.
+
+     For example usage, see {!(>=>)}. *)
+
     val ( >> ) : 'a t -> 'b t -> 'b t
+    (** [(>>)] is a monadic sequential checking function.  [mx >> my]
+       performs whatever simulated monadic effect is associated with
+       [mx], discards the data associated with [mx], performs whatever
+       simulated monadic effect is associated with [my], and
+       ultimately evaluates to [my].
+
+       [mx >> my] is equivalent to [let* _ = mx in my].
+
+       Example usage for options, lists, and results: 
+
+{v
+# let open Etude.Option in
+Some 1 >> Some 2;;
+- : int option = Etude.Option.Some 2
+# let open Etude.Option in
+Some 1 >> None;;
+- : 'a option = Etude.Option.None
+v}
+
+{v
+# let open Etude.List in
+[1;2;3] >> [1;2;3];;
+- : int list = [1; 2; 3; 1; 2; 3; 1; 2; 3]
+# let open Etude.List in
+[] >> [1;2;3];;
+- : int list = []
+# let open List in
+[1;2;3] >> [];;
+- : 'a list = []
+v}
+
+{v
+# let open Etude.Result.Make (String) in
+Ok 1 >> Ok 2;;
+- : (int, string) result = Ok 2
+# let open Etude.Result.Make (String) in
+Ok 1 >> Error "bad second value";;
+- : ('a, string) result = Error "bad second value"
+# let open Etude.Result.Make (String) in
+Error "bad first value" >> Error "bad second value";;
+- : ('a, string) result = Error "bad first value"
+v}
+     *)
+
     val join : 'a t t -> 'a t
+    (** [join] is monadic join.  It converts a doubly-monadic value into
+       a single-monadic value.  In the list monad, [join] is synonymous 
+       with {!List.concat} and {!List.flatten}.
+
+       Note that in all monads, {!bind} is equivalent to 
+       [fun mx k -> join (map k mx)].
+
+       Example usage for options, results, and lists:
+{v
+# let open Etude.Option in
+join (Some (Some 7));;
+- : int option = Etude.Option.Some 7
+# let open Etude.Option in
+join (Some None);;
+- : 'a option = Etude.Option.None
+# let open Etude.Option in
+join None;;
+- : 'a option = Etude.Option.None
+v}
+
+{v
+# let open Etude.List in
+join [[1; 2; 3]; [4; 5; 6]];;
+- : int list = [1; 2; 3; 4; 5; 6]
+# let open Etude.List in
+join [[]; []; []];;
+- : 'a list = []
+v}
+
+{v
+# let open Etude.Result.Make (String) in
+join (Ok (Ok 4));;
+- : (int, string) result = Ok 4
+# let open Etude.Result.Make (String) in
+join (Ok (Error "uh-oh"));;
+- : ('a, string) result = Error "uh-oh"
+# let open Etude.Result.Make (String) in
+join (Error "uh-oh");;
+- : ('a, string) result = Error "uh-oh"
+v}
+     *)
+
   end
 
   module type MAKE = functor (M : BASIC) ->

@@ -170,16 +170,40 @@ end
 
 module type ETUDE = sig
 
-  (** @inline *)
-  include Endofunctors_intf.Monad.AUGMENTED
 
-  (** @inline *)
+  include Endofunctors_intf.Monad.AUGMENTED
+  (** [Etude.List] implements the monad, applicative, and functor
+     interfaces.  Monads are a big topic, but for more information on
+     monadic style in OCaml, please see {{:
+     https://cs3110.github.io/textbook/chapters/ds/monads.html}these
+     course notes}.  To browse API documentation for the functions
+     that are defined as a part of these interfaces, you may expand
+     the below [include] tab.
+
+     @closed *)
+
   include Traverse_intf.Traversable.List.AUGMENTED
           with type 'a t := 'a t
+  (** [Etude.List] implements a particular version of the traversable
+     interface, with lists as the container type being traversed over.
+     To browse API documentation for the traversal functions defined
+     on lists, you may expand the below [include] tab.
 
-  (** @inline *)
+     @closed *)
+
+
   include Monoid_intf.MONOID
           with type 'a t := 'a t
+  (** [Etude.List] implements the monoid interface.  If you're coming to
+     [Etude] from Haskell, please note that monoids and their
+     characteristic values are defined here are defined on a type {i
+     constructor} ['a t], rather than a ground type [t], making
+     [Etude]'s monoid interface the analogue of Haskell's [Alternative]
+     type class—not Haskell's [Monoid] type class.  To browse API
+     documentation for the monoid functions defined on lists, you may
+     expand the below [include] tab.
+
+     @closed *)
 end
 
 

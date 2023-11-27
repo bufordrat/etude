@@ -33,6 +33,9 @@ module type ETUDE = sig
   type 'a t
   include Monad.AUGMENTED with type 'a t := 'a t
   include Monoid_intf.MONOID with type 'a t := 'a t
+  include Traverse_intf.Traversable.List.AUGMENTED
+        with type 'a t := 'a t
+
   val cat_options : 'a t list -> 'a list
 end
 
