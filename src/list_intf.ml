@@ -169,8 +169,6 @@ module type PRELUDE = sig
 end
 
 module type ETUDE = sig
-
-
   include Endofunctors_intf.Monad.AUGMENTED
   (** [Etude.List] implements the monad, applicative, and functor
      interfaces.  Monads are a big topic, but for more information on

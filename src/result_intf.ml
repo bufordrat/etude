@@ -32,6 +32,8 @@ module type ETUDE = sig
   
   type 'a t
   include Monad.AUGMENTED with type 'a t := 'a t
+  include Traverse_intf.Traversable.List.AUGMENTED
+          with type 'a t := 'a t
 end
 
 module type AUGMENTED = sig

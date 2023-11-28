@@ -66,9 +66,19 @@ sequence [[1]; [2; 3; 4]; [5]];;
 sequence [[1]; [2; 3; 4]; []];;
 - : int list list = []
 v}
+
+{v
+# let open Etude.Result.Make (String) in
+sequence [Ok 1; Ok 2; Ok 3];;
+- : (int list, string) result = Ok [1; 2; 3]
+# let open Etude.Result.Make (String) in
+sequence [Ok 1; Error "an error"; Ok 3];;
+- : (int list, string) result = Error "an error"
+# let open Etude.Result.Make (String) in
+sequence [Ok 1; Error "an error"; Error "another error"];;
+- : (int list, string) result = Error "an error"
+v}
        *)
-
-
     end
 
     module type AUGMENTED = sig
@@ -76,7 +86,15 @@ v}
          
       (** @inline *)
       include BASIC with type 'a t := 'a t
+
       val traverse : ('a -> 'b t) -> 'a list -> 'b list t
+      (** [traverse f lst] is [sequence (map f lst)].
+
+      Example usage for options, lists, and results:
+
+      {{!page-test.hello2}bro} 
+      *)
+
       val forM : 'a list -> ('a -> 'b t) -> 'b list t
     end
 

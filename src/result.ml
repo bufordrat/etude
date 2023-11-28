@@ -19,5 +19,15 @@ module Make : MAKE =
     let pure = Stdlib.Result.ok
     let bind = Stdlib.Result.bind
   end
-  include Monad.Make (ResultMonad)
+
+  module M = Monad.Make (ResultMonad)
+  include M
+
+  module Traverse = struct
+    module T = Traverse.List.Make (M)
+    let sequence = T.sequence
+    let forM = T.forM
+    let traverse = T.traverse
+  end
+  include Traverse
 end
