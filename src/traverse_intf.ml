@@ -91,11 +91,52 @@ v}
       (** [traverse f lst] is [sequence (map f lst)].
 
       Example usage for options, lists, and results:
+{v
+# let open Etude.Option in
+let only_even n = if n mod 2 = 0 then Some n else None in
+traverse only_even [2;4;6;8];;
+- : int list option = Etude.Option.Some [2; 4; 6; 8]
+# let open Etude.Option in
+let only_even n = if n mod 2 = 0 then Some n else None in
+traverse only_even [1;2;3;4];;
+- : int list option = Etude.Option.None
+v}
 
-      {{!page-test.hello2}bro} 
+{v
+# let open Etude.List in
+let double_up n = [n ; n * 10] in
+traverse double_up [1;2;3];;
+- : int list list =
+[[1; 2; 3]; [1; 2; 30]; [1; 20; 3]; [1; 20; 30]; [10; 2; 3]; [10; 2; 30];
+ [10; 20; 3]; [10; 20; 30]]
+# let open Etude.List in
+let only_even n = if n mod 2 = 0 then [n] else [] in
+traverse only_even [2;4;6;8];;
+- : int list list = [[2; 4; 6; 8]]
+# let open Etude.List in
+let only_even n = if n mod 2 = 0 then [n] else [] in
+traverse only_even [1;2;3];;
+- : int list list = []
+v}
+
+{v
+utop[10]> let open Etude.Result.Make (String) in
+let only_even n = if n mod 2 = 0 then Ok n else Error "must be even" in
+traverse only_even [2;4;6;8];;
+- : (int list, string) result = Ok [2; 4; 6; 8]
+utop[11]> let open Etude.Result.Make (String) in
+let only_even n = if n mod 2 = 0 then Ok n else Error "must be even" in
+traverse only_even [1;2;3;4];;
+- : (int list, string) result = Error "must be even"
+v}
       *)
 
       val forM : 'a list -> ('a -> 'b t) -> 'b list t
+      (** [forM] is [flip traverse].
+
+          For example usage, see {!traverse}.
+      *)
+
     end
 
     module type MAKE =
