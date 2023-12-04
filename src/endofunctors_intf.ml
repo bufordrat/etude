@@ -267,7 +267,7 @@ module Monad = struct
      https://cs3110.github.io/textbook/chapters/ds/monads.html}these
      course notes}.
 
-     See {!Endofunctors.Monad.Make.(>>=)} for example usage.
+     See the guide to {!page-endofunctors.bind} for example usage.
 *)
   end
 

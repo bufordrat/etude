@@ -1,11 +1,31 @@
-{0:hello hello}
+{0:endofunctors Guide to Endofunctors}
 
-hello
+Here is a tour through the various functions that are defined in
+{!Etude.Endofunctors}.
 
-{1:goodbye goodbye}
+{1:map [map], [(<$>)], [(>>|)], and [(>|=)]}
 
-what's up here is some new text
+{!Etude.Endofunctors.Functor.Make.map} is the function that defines
+the functor interface, in the endofunctor sense of the term—not to be
+confused with OCaml and SML's module functors, which is a different
+meaning of the word "functor".  It is a generalization of
+[Stdlib.List.map] to other datatypes besides functional linked lists.
 
-{1:hello2 hello}
+Officially, the only definition of a functor is that it satisfy these
+equations, for any value [func] of type ['a t] and any functions [f]
+of type ['b -> 'c] and [g] of type ['a -> 'b]:
 
-hello again
+{ul {- [map id func] equals [id func]}
+    {- [map (fun x -> f (g x) func] equals [(fun x -> map f (map g x)) func] }
+}
+
+These equations provide a flexible and yet also constrained interface.
+The intuition behind them is: when you map over a datatype, you
+introspect into it and look for opportunities to apply an input
+function [f] to any subparts of it that are of [f]'s input type, then
+return a new piece of data that applied [f] wherever it could, without
+changing the overall structure of the input to [map].
+
+{1:bind [bind], [(>>=)], and [(let*)]}
+
+more test text
