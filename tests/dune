@@ -1,0 +1,6 @@
+(tests
+  (names monoid_tests)
+ (libraries
+   alcotest
+   etude
+   prelude))
