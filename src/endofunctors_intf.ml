@@ -4,31 +4,14 @@ module Functor = struct
 
     val map : ('a -> 'b) -> 'a t -> 'b t
     (** [map] is a generalization of [Stdlib.List.map] to any datatype
-       that supports the functor interface, in the endofunctor sense
+       that supports the functor interface, in the 
+       {{: https://en.wikipedia.org/wiki/Functor#endofunctor}endofunctor} sense
        of the term—not to be confused with OCaml and SML's module
        functors, which is a different meaning of the word "functor".
        For an introductory explanation of the functor interface, please 
        see {{: https://typeclasses.com/functortown/functor-bifunctor}
        Functortown}.
 
-       Example usage for options, lists, and results:
-{v
-# let open Etude.Option in
-map succ (Some 12);;
-- : int option = Etude.Option.Some 13
-v}
-
-{v
-# let open Etude.List in
-map succ [1;2;3];;
-- : int list = [2; 3; 4]
-v}
-
-{v
-# let open Etude.Result.Make (String) in
-map succ (Ok 12);;
-- : (int, string) result = Ok 13
-v}
      *)
   end
 

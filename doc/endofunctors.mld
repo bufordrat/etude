@@ -1,30 +1,67 @@
 {0:endofunctors Guide to Endofunctors}
 
-Here is a tour through the various functions that are defined in
+Here is a guide to using the various functions that are defined in
 {!Etude.Endofunctors}.
 
 {1:map [map], [(<$>)], [(>>|)], and [(>|=)]}
 
 {!Etude.Endofunctors.Functor.Make.map} is the function that defines
-the functor interface, in the endofunctor sense of the term—not to be
-confused with OCaml and SML's module functors, which is a different
-meaning of the word "functor".  It is a generalization of
-[Stdlib.List.map] to other datatypes besides functional linked lists.
+the functor interface, in the {{:
+https://en.wikipedia.org/wiki/Functor#endofunctor}endofunctor} sense
+of the term—not to be confused with OCaml and SML's module functors,
+which is a different meaning of the word "functor".  It is a
+generalization of [Stdlib.List.map] to other datatypes besides
+functional linked lists.
 
-Officially, the only definition of a functor is that it satisfy these
-equations, for any value [func] of type ['a t] and any functions [f]
-of type ['b -> 'c] and [g] of type ['a -> 'b]:
+Officially, the definition of a functor is that however [map] is
+implemented, it must satisfy these equations, for any value [func] of
+type ['a t] and any functions [f] of type ['b -> 'c] and [g] of type
+['a -> 'b]:
 
 {ul {- [map id func] equals [id func]}
-    {- [map (fun x -> f (g x) func] equals [(fun x -> map f (map g x)) func] }
+    {- [map (fun x -> f (g x)) func] equals [(fun x -> map f (map g x)) func] }
 }
 
+[map] will always be of type [('a -> 'b) -> 'a t -> 'b t].
+
 These equations provide a flexible and yet also constrained interface.
-The intuition behind them is: when you map over a datatype, you
-introspect into it and look for opportunities to apply an input
-function [f] to any subparts of it that are of [f]'s input type, then
-return a new piece of data that applied [f] wherever it could, without
-changing the overall structure of the input to [map].
+The intuition behind them is: when you map over a value [func] of type
+['a t], you look for opportunities to apply an input function [f] to
+anything inside or related to ['a t] that is of type ['a], then return
+a new piece of data that made use of [f] wherever it could, while
+retaining the overall structure of the original input, [func].
+
+Here are some examples showing how to use [map].  In the option
+functor, you use it when you have a function of type ['a -> 'b], but
+you need to apply it to an input of type ['a option] rather than an
+input of type ['a]:
+
+{v
+# let open Etude.Option in
+map succ (Some 12);;
+- : int option = Etude.Option.Some 13
+# let open Etude.Option in
+map succ None;;
+- : int option = Etude.Option.None
+v}
+
+Lists are the more familiar example:
+
+{v
+# let open Etude.List in
+map succ [1;2;3];;
+- : int list = [2; 3; 4]
+v}
+
+In the result functor, you use [map] when you have a function of type
+['a -> 'b] that you want to apply to an [('a, e) option], for some
+error type [e], rather than an ['a]:
+
+{v
+# let open Etude.Result.Make (String) in
+map succ (Ok 12);;
+- : (int, string) result = Ok 13
+v}
 
 {1:bind [bind], [(>>=)], and [(let*)]}
 
