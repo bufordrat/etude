@@ -1,4 +1,8 @@
+(** Module signatures for {!Etude.Endofunctors}. *)
+
+(** The functor interface. *)
 module Functor = struct
+
   module type BASIC = sig
     type 'a t
 
@@ -8,10 +12,8 @@ module Functor = struct
        {{: https://en.wikipedia.org/wiki/Functor#endofunctor}endofunctor} sense
        of the term—not to be confused with OCaml and SML's module
        functors, which is a different meaning of the word "functor".
-       For an introductory explanation of the functor interface, please 
-       see {{: https://typeclasses.com/functortown/functor-bifunctor}
-       Functortown}.
-
+       
+       For example usage, please see the guide to {!page-endofunctors.map}.
      *)
   end
 
@@ -27,51 +29,16 @@ module Functor = struct
        http://jobjo.github.io//2019/04/24/ocaml-has-some-new-shiny-syntax.html}letops
        syntax}.
 
-       Example usage for options, lists, and results:
-{v
-# let open Etude.Option in
-let+ n = Some 12 in succ n;;
-- : int option = Etude.Option.Some 13
-v}
+       For more infomation, please see the guide to
+       {!page-endofunctors.(let+)}.
 
-{v
-# let open Etude.List in
-let+ each_element = [1;2;3] in succ each_element;;
-- : int list = [2; 3; 4]
-v}
-
-{v
-# let open Etude.Result.Make (String) in
-let+ n = Ok 12 in succ n;;
-- : (int, string) result = Ok 13
-v}
      *)
 
     val ( >>| ) : 'a t -> ('a -> 'b) -> 'b t
     (** [(>>|)] is an infix version of[flip map].
 
-     Example usage for options, lists, and results:
-
-{v
-# let open Etude.Option in Some 15 >>| succ;;
-- : int option = Etude.Option.Some 16
-# let open Etude.Option in None >>| succ;;
-- : int option = Etude.Option.None
-v}
-
-{v
-# let open Etude.List in [1;2;3] >>| succ;;
-- : int list = [2; 3; 4]
-v}
-
-{v
-# let open Etude.Result.Make (String) in Ok 13 >>| succ;;
-- : (int, string) result = Ok 14
-# let open Etude.Result.Make (String) in Error "oops" >>| succ;;
-- : (int, string) result = Error "oops"
-v}
-
-     *)
+        For example usage, please see the guide to
+       {!page-endofunctors.(>>|)}.  *)
 
     val ( <&> ) : 'a t -> ('a -> 'b) -> 'b t
     (** [(<&>)] is synonymous with {!(>>|)} and {!(>|=)}. *)
@@ -80,36 +47,27 @@ v}
     (** [(>|=)] is synonymous with {!(>>|)} and {!(<&>)}. *)
 
     val ( <$> ) : ('a -> 'b) -> 'a t -> 'b t
-    (** [(<$>)] is an infix version of {!map}. 
+    (** [(<$>)] is an infix version of {!map}.
 
-        Example usage for options, lists, and results:
-{v
-# let open Etude.Option in succ <$> Some 13;;
-- : int option = Etude.Option.Some 14
-# let open Etude.Option in succ <$> None;;
-- : int option = Etude.Option.None
-v}
-     *)
+        For more information, please see the guide to
+        {!page-endofunctors.(>>|)}.  *)
   end
 
   module type MAKE = functor (F : BASIC) ->
                      AUGMENTED with type 'a t = 'a F.t
 end
+
+(**/**)
 module type FUNCTOR = Functor.AUGMENTED
-               
+(**/**)
+             
+(** The applicative interface. *)  
 module Applicative = struct
   module type BASIC = sig
     type 'a t
     include Functor.BASIC with type 'a t := 'a t
 
-    val pure : 'a -> 'a t
-    (** [pure] lifts a value of type ['a] into an applicative value
-       of type ['a t].  In the option applicative, it is 
-       [fun x -> Some x], in the list applicative, it is
-       [fun x -> [x]], and in the result applicative it is
-       [fun x -> Ok x].
-       
-       Note that [pure] is synonymous with monadic [return]. *)
+    val unit : unit t
 
     val product : 'a t -> 'b t -> ('a * 'b) t
     (** [product] is the applicative product function.  OCaml uses the
@@ -228,17 +186,32 @@ pure (+) <*> Ok 1 <*> Error "whoops" ;;
 - : (int, string) result = Error "whoops"
 v}
      *)
+
+      val pure : 'a -> 'a t
+
   end
 
   module type MAKE = functor (A : BASIC) ->
                      AUGMENTED with type 'a t = 'a A.t 
 end
-module type APPLICATIVE = Applicative.AUGMENTED
 
+(**/**)
+module type APPLICATIVE = Applicative.AUGMENTED
+(**/**)
+
+(** The monad interface. *)
 module Monad = struct
   module type BASIC = sig
     type 'a t
+
     val pure : 'a -> 'a t
+    (** [pure] lifts a value of type ['a] into an applicative value
+       of type ['a t].  In the option applicative, it is 
+       [fun x -> Some x], in the list applicative, it is
+       [fun x -> [x]], and in the result applicative it is
+       [fun x -> Ok x].
+       
+       Note that [pure] is synonymous with monadic [return]. *)
 
     val bind : 'a t -> ('a -> 'b t) -> 'b t
   (** [bind] is monadic bind.  Bind takes a monadic value [mx] of type
@@ -502,4 +475,7 @@ v}
   module type MAKE = functor (M : BASIC) ->
                      AUGMENTED with type 'a t = 'a M.t
 end
+
+(**/**)
 module type MONAD = Monad.AUGMENTED
+(**/**)

@@ -31,7 +31,7 @@ module List = struct
         in x :: xs
       in
       let open Prelude.List in
-      foldl reducer (I.pure []) (rev lst)
+      foldl reducer (pure []) (rev lst)
     let traverse f lst =
       let open Stdlib.List in
       sequence (map f lst)
