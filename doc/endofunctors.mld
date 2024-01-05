@@ -106,7 +106,7 @@ rule which turns
 
 into
 
-{[map f x]}
+{[map f x']}
 
 In the option functor, you can use [(let+)] to pretend you're binding
 a local variable to an ['a] rather than an ['a option]:
