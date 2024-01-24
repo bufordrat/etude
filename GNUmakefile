@@ -1,6 +1,6 @@
 # etude                             -*- makefile -*-
 # GNUmakefile
-# Matt Teichman <https://elucidations.now.sh>
+# Matt Teichman <https://elucidations.vercel.app>
 
 OPENHTML = emacsclient -n -a "emacs --no-desktop" --eval '(eww-open-file "$1")'
 LIB = makefiles

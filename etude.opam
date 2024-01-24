@@ -9,10 +9,8 @@ bug-reports: "https://github.com/bufordrat/etude"
 depends: [
   "dune" {>= "3.11"}
   "prelude"
-  "alcotest"
-  ":with-test"
-  "qcheck"
-  ":with-test"
+  "alcotest" {with-test}
+  "qcheck" {with-test}
   "odoc" {with-doc}
 ]
 build: [

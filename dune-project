@@ -12,7 +12,7 @@
  (bug_reports "https://github.com/bufordrat/etude")
  (depends
    prelude
-   alcotest :with-test
-   qcheck :with-test)
+   (alcotest :with-test)
+   (qcheck :with-test))
  (source (github bufordrat/etude)))
 
