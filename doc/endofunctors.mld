@@ -1,0 +1,146 @@
+{0:endofunctors Guide to Endofunctors}
+
+This overview provides examples showing how to use the various
+functions that are defined in {!Etude.Endofunctors}.
+
+{1:functors The Functor Interface}
+
+{!Etude.Endofunctors.Functor.Make.map} is the function that defines
+the functor interface, in the {{:
+https://en.wikipedia.org/wiki/Functor#endofunctor}endofunctor} sense
+of the term—not to be confused with OCaml and SML's module functors,
+which is a different meaning of the word "functor".  It is a
+generalization of [Stdlib.List.map] to other datatypes besides
+functional linked lists.
+
+Officially, the definition of a functor is that however [map] is
+implemented, it must satisfy these equations, for any value [func] of
+type ['a t] and any functions [f] of type ['b -> 'c] and [g] of type
+['a -> 'b]:
+
+{ul {- [map id func] equals [id func]}
+    {- [map (fun x -> f (g x)) func] equals [(fun x -> map f (map g x)) func] }
+}
+
+[map] will always be of type [('a -> 'b) -> 'a t -> 'b t].
+
+These equations define a flexible yet fairly constrained interface.
+The intuition behind them is: when you map over a value [func] of type
+['a t], you look for opportunities to apply an input function [f] to
+anything inside or related to ['a t] that is of type ['a], then return
+a new piece of data that made use of [f] wherever it could, while
+retaining the overall structure of the original input, [func].
+
+For more background on the functor interface,
+{{:https://typeclasses.com/functortown}Functortown} is an excellent
+resource.
+
+{2:map map}
+
+Here are some examples showing how to use [map].  In the option
+functor, you use it when you have a function of type ['a -> 'b], but
+you need to apply it to an input of type ['a option] rather than an
+input of type ['a]:
+
+{v
+# let open Etude.Option in
+map succ (Some 12);;
+- : int option = Etude.Option.Some 13
+# let open Etude.Option in
+map succ None;;
+- : int option = Etude.Option.None
+v}
+
+In the list functor, more familiarly, [map] applies the input function
+to every element of a list and does nothing to an empty list:
+
+{v
+# let open Etude.List in
+map succ [1;2;3];;
+- : int list = [2; 3; 4]
+# let open Etude.List in
+map succ [];;
+- : int list = []
+v}
+
+In the result functor, you use [map] when you have a function of type
+['a -> 'b] that you want to apply to an [('a, e) result], for some
+error type [e], rather than an ['a].  Here is an example where [e] is
+[String.t]:
+
+{v
+# let open Etude.Result.Make (String) in
+map succ (Ok 12);;
+- : (int, string) result = Ok 13
+v}
+
+{2:(>>|) Infix Operators}
+
+[(<$>)] is [map], and [(>>|)], [(<&>)], and [(>|=)] are [flip map].
+They behave the same way as [map], differing only in their syntax.
+Here are a few brief examples demonstrating how to use them:
+
+{v
+# let open Etude.Option in
+Some 12 >>| succ;;
+- : int option = Etude.Option.Some 13
+# let open Etude.Option in
+Some 12 <&> succ;;
+- : int option = Etude.Option.Some 13
+# let open Etude.Option in
+Some 12 >|= succ;;
+- : int option = Etude.Option.Some 13
+# let open Etude.Option in
+succ <$> Some 12;;
+- : int option = Etude.Option.Some 13
+v}
+
+{2:(let+) Letops}
+
+[(let+)] is [flip map] for use in {{:
+http://jobjo.github.io//2019/04/24/ocaml-has-some-new-shiny-syntax.html}letops
+syntax}.  It is a magic keyword that will trigger a syntactic desugaring
+rule which turns 
+
+{[let+ x = x' in f x]}
+
+into
+
+{[map f x']}
+
+In the option functor, you can use [(let+)] to pretend you're binding
+a local variable to an ['a] rather than an ['a option]:
+
+{v
+# let open Etude.Option in
+let+ n = Some 12 in succ n;;
+- : int option = Etude.Option.Some 13
+v}
+
+In the list functor, you can use [(let+)] to pretend you're binding a
+local variable to an individual element of a list rather than a list:
+
+{v
+# let open Etude.List in
+let+ each_element = [1;2;3] in succ each_element;;
+- : int list = [2; 3; 4]
+v}
+
+Finally, in the result functor, you can use [(let+)] to pretend you're
+binding a local variable to an ['a], rather than an [('a, e) result]
+(for some error type [e]).  Here is an example where [e] is
+[String.t]:
+
+{v
+# let open Etude.Result.Make (String) in
+let+ n = Ok 12 in succ n;;
+- : (int, string) result = Ok 13
+v}
+
+{1:applicatives The Applicative Interface}
+
+An applicative functor extends 
+
+{1:bind The Monad Interface}
+
+under construction

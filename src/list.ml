@@ -33,6 +33,6 @@ module Monoid = struct
   let append = Mo.append
   let empty = Mo.empty
   let (<|>) = Mo.(<|>)
-  let asum = Mo.asum
+  let asum = Stdlib.List.concat
 end
 include Monoid

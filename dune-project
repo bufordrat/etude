@@ -10,6 +10,9 @@
  (authors "Matt Teichman <teichman@uchicago.edu>")
  (homepage "https://github.com/bufordrat/etude")
  (bug_reports "https://github.com/bufordrat/etude")
- (depends prelude)
+ (depends
+   prelude
+   (alcotest :with-test)
+   (qcheck :with-test))
  (source (github bufordrat/etude)))
 

@@ -31,6 +31,7 @@ end = struct
   module S = Monad.Make (StateMonad)
 
   let pure = S.pure
+  let unit = S.unit
   let return = S.pure
   let bind = S.bind
   let map = S.map
