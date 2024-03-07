@@ -14,6 +14,12 @@ module type MAKE =
     type 'a t = ('a, E.t) result
     include AUGMENTED with type 'a t := ('a, E.t) result
 
+    (* Etude values that are polymorphic go here *)
+
+    val bind_error : ('a, 'e) result ->
+                     ('e -> ('a, 'd) result) ->
+                     ('a, 'd) result
+
     (* Prelude values that are polymorphic go here. *)
 
     val ok : 'a -> ('a, 'd) result
