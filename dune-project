@@ -11,7 +11,7 @@
  (homepage "https://github.com/bufordrat/etude")
  (bug_reports "https://github.com/bufordrat/etude")
  (depends
-   prelude
+   (prelude (= "~dev"))
    (alcotest :with-test)
    (qcheck :with-test))
  (source (github bufordrat/etude)))
