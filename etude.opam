@@ -8,7 +8,7 @@ homepage: "https://github.com/bufordrat/etude"
 bug-reports: "https://github.com/bufordrat/etude"
 depends: [
   "dune" {>= "3.11"}
-  "prelude" {= "~dev"}
+  "prelude"
   "alcotest" {with-test}
   "qcheck" {with-test}
   "odoc" {with-doc}
