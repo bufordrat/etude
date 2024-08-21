@@ -37,5 +37,13 @@ module Make : MAKE =
       match mx with
       | Error e -> k e
       | Ok o -> Ok o
+
+    let is_ok = function
+      | Ok _ -> true
+      | Error _ -> false
+
+    let oks lst = List.filter is_ok lst
+    let errors lst = List.filter (fun x -> not (is_ok x)) lst
+
   end
 
