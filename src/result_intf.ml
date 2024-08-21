@@ -20,6 +20,12 @@ module type MAKE =
                      ('e -> ('a, 'd) result) ->
                      ('a, 'd) result
 
+    val oks : ('a, 'b) result list ->
+              'a list
+    
+    val errors: ('a, 'b) result list ->
+                'b list
+
     (* Prelude values that are polymorphic go here. *)
 
     val ok : 'a -> ('a, 'd) result
@@ -30,7 +36,6 @@ module type MAKE =
     val reduce : ('a, 'd) result list -> 'a list
     val always : 'a -> (unit -> 'b) -> 'b
     val to_bool : ('a, 'd) result -> bool
-    val to_option : ('a, 'd) result -> 'a option
     val error : 'd -> ('a, 'd) result
     val get_error : ('a, 'd) result -> 'd
     val on_error :
