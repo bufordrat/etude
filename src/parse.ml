@@ -4,7 +4,7 @@ end
 
 module Stream (Remainder : REMAINDER) = struct
   type 'parse_result t =
-    { output : 'parse_result option;
+    { output : 'parse_result;
       backtrack : char list option;
       remainder : char Remainder.t }
 end
