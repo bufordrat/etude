@@ -1,23 +1,36 @@
+
+(* module Stream (Remainder : REMAINDER) = struct
+ *   type 'parse_result t =
+ *     { output : 'parse_result;
+ *       backtrack : char list option;
+ *       remainder : char Remainder.t }
+ * end *)
+
+(* module S' = Stream (Seq) *)
+
 module type REMAINDER = sig
   type 'a t
+  val force : 'a t -> 'a * 'a t
 end
 
-module Stream (Remainder : REMAINDER) = struct
-  type 'parse_result t =
-    { output : 'parse_result;
-      backtrack : char list option;
-      remainder : char Remainder.t }
-end
-
-module S' = Stream (Seq)
-
-module type STREAMLINES = sig
-  type input
-  type t =
-    | Line of char list * char list option
-    | EndOfInput
-  val next : input -> t
-end
+(* module STREAMLINES (R : REMAINDER) = struct
+ *   type parsed_line = { line : char list;
+ *                        ending: string option;
+ *                        remainder : string R.t; }
+ *   type t =
+ *     | Line of parsed_line
+ *     | EndOfInput
+ *   
+ *   let next r =
+ *     let open Prelude in
+ *     let forced, remainder = R.force r in
+ *     match String.split ~sep:"\n" forced with
+ *     | "" -> EndOfInput
+ *     | [str] -> Line { line = str;
+ *                       ending = None;
+ *                       remainder = remainder }
+ *     | str : strs -> 
+ * end *)
 
 (* module S : STREAMLINES with type input = string = struct
  *   type input = string
