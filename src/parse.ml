@@ -1,3 +1,34 @@
+type fetch =
+  | Next of char
+  | EndOfInput
+
+let fetch in_channel =
+  match input_char in_channel with
+  | exception _ -> EndOfInput
+  | c -> Next c
+
+type input = { backtrack : char list option;
+               unfolded : in_channel; }
+
+let peek i =
+  match i.backtrack with
+  | None | Some [] ->
+     let c = input_char i.unfolded
+     in (c, { backtrack = Some [c];
+              unfolded = i.unfolded; })
+  | Some (c :: cs) -> (c, { backtrack = Some (c :: cs);
+                            unfolded = i.unfolded; })
+
+let read i =
+  match i.backtrack with
+  | None | Some [] -> (input_char i.unfolded, i)
+  | Some (c :: cs) -> (c, { backtrack = Some cs;
+                            unfolded = i.unfolded; })
+
+let chan_to_input c = { backtrack = None;
+                        unfolded = c; }
+
+
 
 (* module Stream (Remainder : REMAINDER) = struct
  *   type 'parse_result t =
@@ -8,10 +39,10 @@
 
 (* module S' = Stream (Seq) *)
 
-module type REMAINDER = sig
-  type 'a t
-  val force : 'a t -> 'a * 'a t
-end
+(* module type REMAINDER = sig
+ *   type 'a t
+ *   val force : 'a t -> 'a * 'a t
+ * end *)
 
 (* module STREAMLINES (R : REMAINDER) = struct
  *   type parsed_line = { line : char list;
