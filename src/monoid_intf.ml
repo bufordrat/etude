@@ -1,6 +1,7 @@
 module Semigroup = struct
   module type BASIC = sig
     type 'a t
+
     val append : 'a t -> 'a t -> 'a t
     (** [append] is a general-purpose append operation.  Officially, in
        the context of the monoid interface, all "append" means is "an
@@ -10,14 +11,14 @@ module Semigroup = struct
 
        For usage examples, please see {!Etude.Monoid.Make.(<|>)}.
      *)
-
   end
 
   module type AUGMENTED = sig
     type 'a t
+
     include BASIC with type 'a t := 'a t
-    
-    val (<|>) : 'a t -> 'a t -> 'a t
+
+    val ( <|> ) : 'a t -> 'a t -> 'a t
     (** [(<|>)] is {!append}.
 
        Example usage for options and lists:
@@ -44,6 +45,7 @@ v}
      *)
   end
 end
+
 module type SEMIGROUP = Semigroup.BASIC
 
 module Monoid = struct
@@ -57,7 +59,6 @@ module Monoid = struct
     (** [empty] is the identity element of the monoid, which means that
        for any value [a], [empty <|> a] and [a <|> empty] both equal
        [a]. *)
-
   end
 
   module type AUGMENTED = sig
@@ -69,8 +70,9 @@ module Monoid = struct
     (** @inline *)
     include BASIC with type 'a t := 'a t
 
-    (* TODO: abstract the list part over foldable container types *)
-          
+    (* TODO: abstract the list part over foldable container
+       types *)
+
     val asum : 'a t list -> 'a t
     (** [asum] left folds [(<|>)] over the input list, with [empty] as
        the initial accumulator.
@@ -99,5 +101,5 @@ v}
        *)
   end
 end
-module type MONOID = Monoid.AUGMENTED
 
+module type MONOID = Monoid.AUGMENTED

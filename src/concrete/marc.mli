@@ -1,10 +1,7 @@
-val leader : string ->
-             string
+val leader : string -> string
 
-val lookup : string ->
-             ?subfield:char ->
-             string ->
-             string list option
+val lookup :
+  string -> ?subfield:char -> string -> string list option
 
 module Examples : sig
   val a : string

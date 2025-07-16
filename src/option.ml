@@ -1,21 +1,23 @@
 include Prelude.Option
 include Stdlib.Option
-
 open Endofunctors
 
 module OptionMonad = struct
   type 'a t = 'a Stdlib.Option.t
+
   let pure = some
   let bind = bind
 end
 
 module OptionMonoid = struct
   type 'a t = 'a Stdlib.Option.t
+
   let append ox oy =
-    match ox, oy with
+    match (ox, oy) with
     | Some s1, _ -> Some s1
     | _, Some s2 -> Some s2
     | None, None -> None
+
   let empty = None
 end
 
@@ -26,19 +28,23 @@ type 'a t = 'a option = None | Some of 'a
 
 module Traverse = struct
   module T = Traverse.List.Make (M)
+
   let sequence = T.sequence
   let forM = T.forM
   let traverse = T.traverse
 end
+
 include Traverse
 
 module Monoid = struct
   module Mo = Monoid.Make (OptionMonoid)
+
   let empty = Mo.empty
-  let (<|>) = Mo.(<|>)
+  let ( <|> ) = Mo.( <|> )
   let append = Mo.append
   let asum = Mo.asum
 end
+
 include Monoid
 
 let cat_options lst =

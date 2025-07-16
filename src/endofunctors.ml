@@ -1,14 +1,13 @@
 module Functor = struct
-  module type BASIC =
-    Endofunctors_intf.Functor.BASIC
+  module type BASIC = Endofunctors_intf.Functor.BASIC
 
   module type AUGMENTED =
     Endofunctors_intf.Functor.AUGMENTED
 
-  module Make (F : BASIC)
-         : AUGMENTED with type 'a t = 'a F.t
-    = struct
-    include F 
+  module Make (F : BASIC) :
+    AUGMENTED with type 'a t = 'a F.t = struct
+    include F
+
     let ( let+ ) x f = map f x
     let ( >>| ) = ( let+ )
     let ( <&> ) = ( let+ )
@@ -16,68 +15,72 @@ module Functor = struct
     let ( <$> ) = map
   end
 
-  module Compose (F1 : BASIC) (F2 : BASIC)
-         : BASIC with type 'a t = 'a F2.t F1.t
-    = struct
+  module Compose (F1 : BASIC) (F2 : BASIC) :
+    BASIC with type 'a t = 'a F2.t F1.t = struct
     type 'a t = 'a F2.t F1.t
+
     let map f composed = F1.map (F2.map f) composed
   end
 end
 
-
 module Applicative = struct
-  module type BASIC =
-    Endofunctors_intf.Applicative.BASIC
+  module type BASIC = Endofunctors_intf.Applicative.BASIC
 
   module type AUGMENTED =
     Endofunctors_intf.Applicative.AUGMENTED
 
-  module Make (A : BASIC)
-         : AUGMENTED with type 'a t = 'a A.t
-    = struct
+  module Make (A : BASIC) :
+    AUGMENTED with type 'a t = 'a A.t = struct
     include Functor.Make (A)
+
     type 'a t = 'a A.t
+
     let ( and+ ) = A.product
     let unit = A.unit
     let pure x = A.map (Fun.const x) unit
     let product = A.product
-    let apply af ax = A.map
-                        (fun (f, x) -> f x)
-                        (A.product af ax)
+
+    let apply af ax =
+      A.map (fun (f, x) -> f x) (A.product af ax)
+
     let ( <*> ) = apply
   end
 end
 
-
 module Monad = struct
-  module type BASIC =
-    Endofunctors_intf.Monad.BASIC
+  module type BASIC = Endofunctors_intf.Monad.BASIC
+  module type AUGMENTED = Endofunctors_intf.Monad.AUGMENTED
 
-  module type AUGMENTED =
-    Endofunctors_intf.Monad.AUGMENTED
-
-  module Make (M : BASIC)
-         : AUGMENTED with type 'a t = 'a M.t
-    = struct
+  module Make (M : BASIC) :
+    AUGMENTED with type 'a t = 'a M.t = struct
     let bind = M.bind
     let ( >>= ) = bind
     let ( let* ) = bind
     let ( >=> ) mf mg x = mf x >>= mg
     let ( <=< ) mf mg x = mg x >>= mf
     let ( >> ) mx my = mx >>= fun _ -> my
-    let join mx = let* x = mx in x
+
+    let join mx =
+      let* x = mx in
+      x
 
     module I = struct
       type 'a t = 'a M.t
+
       let unit = M.pure ()
-      let map f mx = let* x = mx in
-                     M.pure (f x)
-      let product ax ay = let* x = ax in
-                          let* y = ay in
-                          M.pure (x,y)
+
+      let map f mx =
+        let* x = mx in
+        M.pure (f x)
+
+      let product ax ay =
+        let* x = ax in
+        let* y = ay in
+        M.pure (x, y)
     end
+
     let return = M.pure
+
     include Applicative.Make (I)
   end
 end
-

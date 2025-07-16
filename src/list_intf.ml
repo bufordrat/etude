@@ -1,6 +1,7 @@
-(* kind of klugey, but I re-created my own STDLIB list signature (with
-   Merlin's help) in order to avoid that toplevel display bug; this is
-   Stdlib as of compiler version 4.14: *)
+(* kind of klugey, but I re-created my own STDLIB list
+   signature (with Merlin's help) in order to avoid that
+   toplevel display bug; this is Stdlib as of compiler
+   version 4.14: *)
 
 (* utop[3]> open Stdlib.List;;
  * utop[4]> [1;2;3];;
@@ -31,14 +32,22 @@ module type STDLIB = sig
   val rev_map : ('a -> 'b) -> 'a t -> 'b t
   val filter_map : ('a -> 'b option) -> 'a t -> 'b t
   val concat_map : ('a -> 'b t) -> 'a t -> 'b t
-  val fold_left_map : ('a -> 'b -> 'a * 'c) -> 'a -> 'b t -> 'a * 'c t
+
+  val fold_left_map :
+    ('a -> 'b -> 'a * 'c) -> 'a -> 'b t -> 'a * 'c t
+
   val fold_left : ('a -> 'b -> 'a) -> 'a -> 'b t -> 'a
   val fold_right : ('a -> 'b -> 'b) -> 'a t -> 'b -> 'b
   val iter2 : ('a -> 'b -> unit) -> 'a t -> 'b t -> unit
   val map2 : ('a -> 'b -> 'c) -> 'a t -> 'b t -> 'c t
   val rev_map2 : ('a -> 'b -> 'c) -> 'a t -> 'b t -> 'c t
-  val fold_left2 : ('a -> 'b -> 'c -> 'a) -> 'a -> 'b t -> 'c t -> 'a
-  val fold_right2 : ('a -> 'b -> 'c -> 'c) -> 'a t -> 'b t -> 'c -> 'c
+
+  val fold_left2 :
+    ('a -> 'b -> 'c -> 'a) -> 'a -> 'b t -> 'c t -> 'a
+
+  val fold_right2 :
+    ('a -> 'b -> 'c -> 'c) -> 'a t -> 'b t -> 'c -> 'c
+
   val for_all : ('a -> bool) -> 'a t -> bool
   val exists : ('a -> bool) -> 'a t -> bool
   val for_all2 : ('a -> 'b -> bool) -> 'a t -> 'b t -> bool
@@ -52,8 +61,10 @@ module type STDLIB = sig
   val find_all : ('a -> bool) -> 'a t -> 'a t
   val filteri : (int -> 'a -> bool) -> 'a t -> 'a t
   val partition : ('a -> bool) -> 'a t -> 'a t * 'a t
+
   val partition_map :
     ('a -> ('b, 'c) Either.t) -> 'a t -> 'b t * 'c t
+
   val assoc : 'a -> ('a * 'b) t -> 'b
   val assoc_opt : 'a -> ('a * 'b) t -> 'b option
   val assq : 'a -> ('a * 'b) t -> 'b
@@ -75,11 +86,18 @@ end
 
 module type PRELUDE = sig
   type 'a t
+
   val len : 'a t -> int
   val comparison : ('a -> 'a -> int) -> 'a t -> 'a t -> int
+
   val to_string :
     ?left:string ->
-    ?sep:string -> ?right:string -> ('a -> string) -> 'a t -> string
+    ?sep:string ->
+    ?right:string ->
+    ('a -> string) ->
+    'a t ->
+    string
+
   val head : 'a t -> 'a option
   val tail : 'a t -> 'a t option
   val last : 'a t -> 'a
@@ -87,7 +105,10 @@ module type PRELUDE = sig
   val snoc : 'a t -> 'a -> 'a t
   val consup : 'a -> 'a t
   val revcons : 'a -> 'a t -> 'a t
-  val unfoldr : ('a -> bool) -> ('a -> 'b) -> ('a -> 'a) -> 'a -> 'b t
+
+  val unfoldr :
+    ('a -> bool) -> ('a -> 'b) -> ('a -> 'a) -> 'a -> 'b t
+
   val make : int -> (int -> 'a) -> 'a t
   val repeat : int -> 'a -> 'a t
   val trappend : 'a t -> 'a t -> 'a t
@@ -98,7 +119,10 @@ module type PRELUDE = sig
   val permutations : 'a t -> 'a t t
   val upto : int -> int -> int t
   val ( -- ) : int -> int -> int t
-  val random : ?size:(unit -> int) -> (unit -> 'a) -> unit -> 'a t
+
+  val random :
+    ?size:(unit -> int) -> (unit -> 'a) -> unit -> 'a t
+
   val null : 'a t -> bool
   val nonempty : 'a t -> bool
   val singleton : 'a t -> bool
@@ -108,10 +132,21 @@ module type PRELUDE = sig
   val foldr : ('a -> 'b -> 'b) -> 'b -> 'a t -> 'b
   val foldl1 : ('a -> 'a -> 'a) -> 'a t -> 'a
   val foldr1 : ('a -> 'a -> 'a) -> 'a t -> 'a
-  val foldl2 : ('a -> 'b -> 'c -> 'a) -> 'a -> 'b t -> 'c t -> 'a
-  val foldr2 : ('a -> 'b -> 'c -> 'c) -> 'a t -> 'b t -> 'c -> 'c
+
+  val foldl2 :
+    ('a -> 'b -> 'c -> 'a) -> 'a -> 'b t -> 'c t -> 'a
+
+  val foldr2 :
+    ('a -> 'b -> 'c -> 'c) -> 'a t -> 'b t -> 'c -> 'c
+
   val foldwise :
-    ?skip:bool -> int -> ('a -> 'b t -> 'a) -> 'a -> 'b t -> 'a
+    ?skip:bool ->
+    int ->
+    ('a -> 'b t -> 'a) ->
+    'a ->
+    'b t ->
+    'a
+
   val conswith : ('a -> 'b) -> 'a -> 'b t -> 'b t
   val conswhen : ('a -> bool) -> 'a -> 'a t -> 'a t
   val snocwith : ('a -> 'b) -> 'b t -> 'a -> 'b t
@@ -149,27 +184,39 @@ module type PRELUDE = sig
   val zip : 'a t -> 'b t -> ('a * 'b) t
   val zipwith : ('a -> 'b -> 'c) -> 'a t -> 'b t -> 'c t
   val unzip : ('a * 'b) t -> 'a t * 'b t
+
   module Assoc = Prelude.Lists.Assoc
+
   val sorted : ('a -> 'a -> int) -> 'a t -> bool
   val uniq : ?compare:('a -> 'a -> int) -> 'a t -> 'a t
-  val uniqc : ?compare:('a -> 'a -> int) -> 'a t -> (int * 'a) t
+
+  val uniqc :
+    ?compare:('a -> 'a -> int) -> 'a t -> (int * 'a) t
+
   val index : ?z:int -> 'a t -> (int * 'a) t
   val pos : ?eq:('a -> 'a -> bool) -> 'a -> 'a t -> int
   val project : ?relaxed:bool -> int t -> 'a t -> 'a t
   val nub : ?compare:('a -> 'a -> int) -> 'a t -> 'a t
   val nub2 : ?compare:('a -> 'a -> int) -> 'a t -> 'a t
-  val union : ?compare:('a -> 'a -> int) -> 'a t -> 'a t -> 'a t
+
+  val union :
+    ?compare:('a -> 'a -> int) -> 'a t -> 'a t -> 'a t
+
   val intersect :
     ?compare:('a -> 'a -> int) -> 'a t -> 'a t -> 'a t
-  val subset : ?compare:('a -> 'a -> int) -> 'a t -> 'a t -> bool
-  val diff : ?compare:('a -> 'a -> int) -> 'a t -> 'a t -> 'a t
+
+  val subset :
+    ?compare:('a -> 'a -> int) -> 'a t -> 'a t -> bool
+
+  val diff :
+    ?compare:('a -> 'a -> int) -> 'a t -> 'a t -> 'a t
+
   val cartesian_product : 'a t t -> 'a t t
   val powerset : 'a t -> 'a t t
   val combinations : int -> 'a t -> 'a t t
 end
 
 module type ETUDE = sig
-  include Endofunctors_intf.Monad.AUGMENTED
   (** [Etude.List] implements the monad, applicative, and functor
      interfaces.  Monads are a big topic, but for more information on
      monadic style in OCaml, please see {{:
@@ -179,19 +226,18 @@ module type ETUDE = sig
      the below [include] tab.
 
      @closed *)
+  include Endofunctors_intf.Monad.AUGMENTED
 
-  include Traverse_intf.Traversable.List.AUGMENTED
-          with type 'a t := 'a t
   (** [Etude.List] implements a particular version of the traversable
      interface, with lists as the container type being traversed over.
      To browse API documentation for the traversal functions defined
      on lists, you may expand the below [include] tab.
 
      @closed *)
+  include
+    Traverse_intf.Traversable.List.AUGMENTED
+      with type 'a t := 'a t
 
-
-  include Monoid_intf.MONOID
-          with type 'a t := 'a t
   (** [Etude.List] implements the monoid interface.  If you're coming to
      [Etude] from Haskell, please note that monoids and their
      characteristic values are defined here are defined on a type {i
@@ -202,19 +248,23 @@ module type ETUDE = sig
      expand the below [include] tab.
 
      @closed *)
+  include Monoid_intf.MONOID with type 'a t := 'a t
 end
-
 
 module type AUGMENTED = sig
   (** Functional linked lists.  {!Etude.List.t} is [Stdlib.List.t] *)
   type 'a t = 'a list
 
   (**/**)
+
   include STDLIB with type 'a t := 'a t
+
   (**/**)
 
   (**/**)
+
   include PRELUDE with type 'a t := 'a t
+
   (**/**)
 
   (** @inline *)

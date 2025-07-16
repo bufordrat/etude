@@ -2,7 +2,6 @@
 
 (** The functor interface. *)
 module Functor = struct
-
   module type BASIC = sig
     type 'a t
 
@@ -22,7 +21,6 @@ module Functor = struct
 
     (** @inline *)
     include BASIC with type 'a t := 'a t
-
 
     val ( let+ ) : 'a t -> ('a -> 'b) -> 'b t
     (** [(let+)] is [flip map] for use in {{:
@@ -54,17 +52,20 @@ module Functor = struct
   end
 
   module type MAKE = functor (F : BASIC) ->
-                     AUGMENTED with type 'a t = 'a F.t
+    AUGMENTED with type 'a t = 'a F.t
 end
 
 (**/**)
+
 module type FUNCTOR = Functor.AUGMENTED
+
 (**/**)
-             
-(** The applicative interface. *)  
+
+(** The applicative interface. *)
 module Applicative = struct
   module type BASIC = sig
     type 'a t
+
     include Functor.BASIC with type 'a t := 'a t
 
     val unit : unit t
@@ -187,16 +188,17 @@ pure (+) <*> Ok 1 <*> Error "whoops" ;;
 v}
      *)
 
-      val pure : 'a -> 'a t
-
+    val pure : 'a -> 'a t
   end
 
   module type MAKE = functor (A : BASIC) ->
-                     AUGMENTED with type 'a t = 'a A.t 
+    AUGMENTED with type 'a t = 'a A.t
 end
 
 (**/**)
+
 module type APPLICATIVE = Applicative.AUGMENTED
+
 (**/**)
 
 (** The monad interface. *)
@@ -214,7 +216,7 @@ module Monad = struct
        Note that [pure] is synonymous with monadic [return]. *)
 
     val bind : 'a t -> ('a -> 'b t) -> 'b t
-  (** [bind] is monadic bind.  Bind takes a monadic value [mx] of type
+    (** [bind] is monadic bind.  Bind takes a monadic value [mx] of type
      ['a t] and a Kleisli arrow function [k] of type ['a -> 'b t], and
      allows you to pipe [mx] into [k], despite the fact that the input
      type of [k] is ['a] and not ['a t].  It can be thought of as
@@ -375,7 +377,7 @@ let* x = Ok 11 in
 - : (int, string) result = Error "too small"
 v}
      *)
-      
+
     val ( <=< ) : ('a -> 'b t) -> ('c -> 'a t) -> 'c -> 'b t
     (** [(<=<)] is Kleisli composition, i.e. the flipped version of
        {!(>=>)}.
@@ -469,13 +471,14 @@ join (Error "uh-oh");;
 - : ('a, string) result = Error "uh-oh"
 v}
      *)
-
   end
 
   module type MAKE = functor (M : BASIC) ->
-                     AUGMENTED with type 'a t = 'a M.t
+    AUGMENTED with type 'a t = 'a M.t
 end
 
 (**/**)
+
 module type MONAD = Monad.AUGMENTED
+
 (**/**)

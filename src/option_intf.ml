@@ -1,5 +1,5 @@
 module type STDLIB = sig
-  include (module type of Stdlib.Option)
+  include module type of Stdlib.Option
 end
 
 module type PRELUDE = sig
@@ -31,19 +31,19 @@ module type ETUDE = sig
   open Endofunctors_intf
 
   type 'a t
+
   include Monad.AUGMENTED with type 'a t := 'a t
   include Monoid_intf.MONOID with type 'a t := 'a t
-  include Traverse_intf.Traversable.List.AUGMENTED
-        with type 'a t := 'a t
+
+  include
+    Traverse_intf.Traversable.List.AUGMENTED
+      with type 'a t := 'a t
 
   val cat_options : 'a t list -> 'a list
 end
 
 module type AUGMENTED = sig
   include STDLIB
-
   include PRELUDE with type 'a t := 'a t
-
   include ETUDE with type 'a t := 'a t
 end
-
