@@ -29,6 +29,9 @@ let chan_to_input c = { backtrack = None;
                         unfolded = c; }
 
 
+(* let char c i =
+ *   let next = peek i
+ *   in *)
 
 (* module Stream (Remainder : REMAINDER) = struct
  *   type 'parse_result t =
