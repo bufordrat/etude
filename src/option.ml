@@ -54,3 +54,7 @@ let cat_options lst =
     | None :: xs -> cat_options' acc xs
   in
   List.rev @@ cat_options' [] lst
+
+let list_to_option = function
+  | [] -> None
+  | x :: _ -> Some x

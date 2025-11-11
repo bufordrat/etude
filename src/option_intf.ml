@@ -40,6 +40,7 @@ module type ETUDE = sig
       with type 'a t := 'a t
 
   val cat_options : 'a t list -> 'a list
+  val list_to_option : 'a list -> 'a option
 end
 
 module type AUGMENTED = sig
