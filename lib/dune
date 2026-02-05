@@ -5,6 +5,10 @@
  (public_name etude)
  (libraries prelude))
 
+(toplevel
+ (name repl)
+ (libraries prelude etude))
+
 (documentation
  (mld_files :standard))
 
