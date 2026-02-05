@@ -10,3 +10,7 @@ let list_to_ranking lst x y =
   match lookup with
   | None -> 0
   | Some i -> i
+
+let list_to_sort rankings lst =
+  let comp x y = list_to_ranking rankings x y in
+  List.stable_sort comp lst
