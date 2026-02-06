@@ -126,8 +126,8 @@ module type PRELUDE = sig
   val null : 'a t -> bool
   val nonempty : 'a t -> bool
 
-  (* TODO: update this value to 'a t -> 'a list for 5.4.0 Stdlib once
-     Prelude is ready*)
+  (* TODO: update this value to 'a t -> 'a list for 5.4.0
+     Stdlib once Prelude is ready*)
 
   (* val singleton : 'a t -> bool *)
   (* val singleton : 'a t -> 'a list *)
