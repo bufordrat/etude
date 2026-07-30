@@ -1,4 +1,4 @@
-(lang dune 3.11)
+(lang dune 3.24)
 (name etude)
 (generate_opam_files true)
 
