@@ -1,0 +1,1 @@
+val random : unit -> string
